@@ -29,8 +29,8 @@ definition(
 
 preferences {
 	section("Devices") {
-		input "switches", "capability.switch", title:"Which Switches?", multiple: true, required: true
-        input "motionSensors", "capability.motionSensor", title:"Which Motion Sensors?", multiple:true, required: true
+		input "switches", "capability.switch", title:"Which Switches?", multiple: true, required: false
+        input "motionSensors", "capability.motionSensor", title:"Which Motion Sensors?", multiple:true, required: false
     }
     section("Timeout Threshold (Default is 5 Min)") {
 		input "timeOutThreshold", "decimal", title: "Number of Minutes", required: false 
@@ -49,7 +49,7 @@ def updated() {
 }
 
 def initialize() {
-	subscribe(motionSensors, "motionSensor", motionDetected)
+	subscribe(motionSensors, "motion", motionDetected)
 }
 
 /////////////////////////////////////////////////////
@@ -60,5 +60,23 @@ def initialize() {
 // If motion detected while lights are still on, unschedule previous deactivation
 
 def motionDetected(evt) {
-	
+	log.debug "${evt.name}: ${evt.value}"
+    if (evt.value == "active") {
+    	switches.each {
+        	if (it.currentValue("switch") != "on")
+            {
+            	it.on()
+                log.debug "Turning on ${it.displayName}"
+            }
+        }
+    }
+    else {
+    	switches.each {
+        	if (it.currentValue("switch") != "off")
+            {
+            	it.off()
+                log.debug "Turning off ${it.displayName}"
+            }
+        }
+    }
 }
