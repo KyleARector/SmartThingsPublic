@@ -25,20 +25,19 @@ definition(
 
 
 preferences {
-	section("Inputs") {
-		// TODO: put inputs here
+	section("Devices") {
+		input "switches", "capability.switch", title:"Which Switches?", multiple: true, required: true
+        input "motionSensors", "capability.motionSensor", title:"Which Motion Sensors?", multiple:true, required: true
 	}
 }
 
 def installed() {
 	log.debug "Installed with settings: ${settings}"
-
 	initialize()
 }
 
 def updated() {
 	log.debug "Updated with settings: ${settings}"
-
 	unsubscribe()
 	initialize()
 }
