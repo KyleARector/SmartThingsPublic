@@ -23,11 +23,17 @@ definition(
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
     iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
 
+/////////////////////////////////////////////////////
+//                      Set Up                     //
+///////////////////////////////////////////////////// 
 
 preferences {
 	section("Devices") {
 		input "switches", "capability.switch", title:"Which Switches?", multiple: true, required: true
         input "motionSensors", "capability.motionSensor", title:"Which Motion Sensors?", multiple:true, required: true
+    }
+    section("Timeout Threshold (Default is 5 Min)") {
+		input "timeOutThreshold", "decimal", title: "Number of Minutes", required: false 
 	}
 }
 
@@ -43,7 +49,16 @@ def updated() {
 }
 
 def initialize() {
-	// TODO: subscribe to attributes, devices, locations, etc.
+	subscribe(motionSensors, "motionSensor", motionDetected)
 }
 
-// TODO: implement event handlers
+/////////////////////////////////////////////////////
+//             Event Handlers And Methods          //
+/////////////////////////////////////////////////////
+
+//If lights on, don't keep sending on command
+// If motion detected while lights are still on, unschedule previous deactivation
+
+def motionDetected(evt) {
+	
+}
