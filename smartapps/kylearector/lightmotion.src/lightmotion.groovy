@@ -89,6 +89,9 @@ def motionDetected(evt) {
             }
         }
     }
+    else {
+    	log.debug "Motion detected, but off hours"
+    }
 }
 
 private checkTime() {
@@ -99,7 +102,7 @@ private checkTime() {
 		def timeNow = now()
 		def begin = timeToday(startTime).time
 		def end = timeToday(endTime).time
-		result = begin < end ? timeNow >= begin && timeNow <= end : timeNow <= end || timeNow >= begin
+		result = begin < end ? timeNow >= begin && timeNow <= end : timeNow <= end || timeNow >= begin      
 	}
 	return result
 }
