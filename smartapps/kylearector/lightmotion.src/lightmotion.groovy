@@ -32,9 +32,15 @@ preferences {
 		input "switches", "capability.switch", title:"Which Switches?", multiple: true, required: false
         input "motionSensors", "capability.motionSensor", title:"Which Motion Sensors?", multiple:true, required: false
     }
-    section("Timeout Threshold (Default is 5 Min)") {
+    section("Parameters") {
+    	input "startTime", "time", title:"Start Time", required:false
+        input "endTime", "time", title:"End Time", required:false
+    }
+    // Can add timeout threshold if necessary
+    // Ecolink device motion timeout is sufficient for personal use
+    /*section("Timeout Threshold (Default is 5 Min)") {
 		input "timeOutThreshold", "decimal", title: "Number of Minutes", required: false 
-	}
+	}*/
 }
 
 def installed() {
@@ -56,27 +62,44 @@ def initialize() {
 //             Event Handlers And Methods          //
 /////////////////////////////////////////////////////
 
-//If lights on, don't keep sending on command
+// Implement below if using timeout
+// If lights on, don't keep sending on command
 // If motion detected while lights are still on, unschedule previous deactivation
 
 def motionDetected(evt) {
-	log.debug "${evt.name}: ${evt.value}"
-    if (evt.value == "active") {
-    	switches.each {
-        	if (it.currentValue("switch") != "on")
-            {
-            	it.on()
-                log.debug "Turning on ${it.displayName}"
+	// Only runs inside allowed hours
+	if (checkTime()) {
+        log.debug "${evt.name}: ${evt.value}"
+        if (evt.value == "active") {
+            switches.each {
+                if (it.currentValue("switch") != "on")
+                {
+                    it.on()
+                    log.debug "Turning on ${it.displayName}"
+                }
+            }
+        }
+        else {
+            switches.each {
+                if (it.currentValue("switch") != "off")
+                {
+                    it.off()
+                    log.debug "Turning off ${it.displayName}"
+                }
             }
         }
     }
-    else {
-    	switches.each {
-        	if (it.currentValue("switch") != "off")
-            {
-            	it.off()
-                log.debug "Turning off ${it.displayName}"
-            }
-        }
-    }
+}
+
+private checkTime() {
+	def result = true
+    // If values not null
+    // Null if user did not select optional inputs
+	if (startTime && endTime) {
+		def timeNow = now()
+		def begin = timeToday(startTime).time
+		def end = timeToday(endTime).time
+		result = begin < end ? timeNow >= begin && timeNow <= end : timeNow <= end || timeNow >= begin
+	}
+	return result
 }
