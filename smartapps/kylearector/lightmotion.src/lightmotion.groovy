@@ -19,9 +19,9 @@ definition(
     author: "Kyle Rector",
     description: "Allows lights or switches to be activated with motion, and sets a time out period to turn them off. Also allows the selection of hours to not perform the action. ",
     category: "Convenience",
-    iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
-    iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
+    iconUrl: "http://kylearector.com/favicon.ico",
+    iconX2Url: "http://kylearector.com/favicon.ico",
+    iconX3Url: "http://kylearector.com/favicon.ico")
 
 /////////////////////////////////////////////////////
 //                      Set Up                     //
