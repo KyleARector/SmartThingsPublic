@@ -154,6 +154,7 @@ def initialize() {
 //             Event Handlers And Methods          //
 /////////////////////////////////////////////////////
 
+// Returns all events from all sensors, sorted reverse-chronologically
 def allEvents() {
 	def resp = []
     def baseEventList
@@ -207,6 +208,7 @@ def allEvents() {
    	return resp
 }
 
+// Updates state of switches based on POST parameters device and command
 def updateSwitches() {
 	// Get parameters of request
 	def device = request.JSON?.device
@@ -245,6 +247,7 @@ def updateSwitches() {
     }
 }
 
+// Lists all switches
 def listSwitches() {
 	def resp = []
 	switches.each {
@@ -253,6 +256,7 @@ def listSwitches() {
 	return resp
 }
 
+// Returns state of specific switch based on GET query paramter device
 def switchState() {
 	def resp = []
     def device = params.device
@@ -293,6 +297,7 @@ def powerState() {
     }
 }
 
+// Lists all motion sensors
 def listMotionSensors() {
 	def resp = []
 	motionSensors.each {
@@ -301,6 +306,7 @@ def listMotionSensors() {
 	return resp
 }
 
+// Lists all motion events since last poll
 def motionEvents() {
 	def resp = []
     def deviceName     
@@ -318,6 +324,7 @@ def motionEvents() {
     return resp
 }
 
+// Lists all contact sensors
 def listContactSensors() {
 	def resp = []
 	contactSensors.each {
@@ -326,6 +333,7 @@ def listContactSensors() {
 	return resp
 }
 
+// Lists all contact events since last poll
 def contactEvents() {
 	def resp = []
     def deviceName    
@@ -343,6 +351,7 @@ def contactEvents() {
     return resp
 }
 
+// Lists all presence sensors
 def listPresenceSensors() {
 	def resp = []
 	presenceSensors.each {
@@ -351,6 +360,7 @@ def listPresenceSensors() {
 	return resp
 }
 
+// Lists all presence events since last poll
 def presenceEvents() {
 	def resp = []
     def deviceName      
@@ -368,6 +378,7 @@ def presenceEvents() {
     return resp
 }
 
+// Lists all temperature sensors
 def listTempSensors() {
 	def resp = []
 	tempSensors.each {
@@ -376,6 +387,7 @@ def listTempSensors() {
 	return resp
 }
 
+// Lists all temperature readings since last poll
 def tempEvents() {
 	def resp = []
     def deviceName     
@@ -393,6 +405,7 @@ def tempEvents() {
     return resp
 }
 
+// Lists all acceleration sensors
 def listVibeSensors() {
 	def resp = []
 	vibeSensors.each {
@@ -401,6 +414,7 @@ def listVibeSensors() {
 	return resp
 }
 
+// Lists all acceleration activity since last poll
 def vibeEvents() {
 	def resp = []
     def deviceName     
