@@ -64,6 +64,11 @@ mappings {
         	GET: "switchState"
         ]
     }
+    path("/powerState") {
+    	action: [
+        	GET: "powerState"
+        ]
+    }
     path("/motionSensors") {
     	action: [
         	GET: "listMotionSensors"
@@ -263,6 +268,29 @@ def switchState() {
     	httpError(501, "No device sent")
     }
     return resp
+}
+
+// Polls all power meters and returns the state based on power consumption. Used for checking against Logitech Harmony or Arduino
+def powerState() {
+	def device = params.device
+	def resp = []
+    if (device) {
+    	for (thing in powerMeters) {
+        	if (thing.displayName == device) {
+            	if (it.currentValue("power") > 0) {
+            		resp << [name: thing.displayName, value: "on"]
+            	}
+            	else {
+            		resp << [name: thing.displayName, value: "off"]
+            	}
+                break
+            }
+        }
+        return resp
+    }
+    else {
+    	httpError(501, "No device sent")
+    }
 }
 
 def listMotionSensors() {
