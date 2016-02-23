@@ -34,6 +34,7 @@ definition(
 preferences {
 	section("Sensors") {
 		input "switches", "capability.switch", title:"Which Switches?", multiple: true, required: false
+        input "powerMeters", "capability.powerMeter", title:"Which Power Meters?", multiple: true, required: false
         input "motionSensors", "capability.motionSensor", title:"Which Motion Sensors?", multiple:true, required: false
         input "contactSensors", "capability.contactSensor", title:"Which Contact Sensors?", multiple:true, required: false
         input "presenceSensors", "capability.presenceSensor", title:"Which Presence Sensors?", multiple:true, required: false
@@ -181,7 +182,7 @@ def allEvents() {
         	resp << [name: deviceName, value: it.value, capability: "presence", date: it.date]
         }
     }
-    /*tempSensors.each {
+    tempSensors.each {
     	deviceName = it.displayName
     	baseEventList = it.events(max: 20).findAll{ it.date > new Date(state.lastAllPoll) && it.value.isNumber()}
         baseEventList.each {
@@ -194,7 +195,7 @@ def allEvents() {
         baseEventList.each {
         	resp << [name: deviceName, value: it.value, capability: "acceleration", date: it.date]
         }
-    }*/
+    }
     state.lastAllPoll = now()
     log.debug "The most recent poll for all sensors was at ${new Date(state.lastAllPoll)}"
     resp.sort {it.date}
