@@ -56,8 +56,7 @@ mappings {
     path("/switches") {
     	action: [
         	GET: "listSwitches",
-            PUT: "updateSwitches",
-            POST: "updateSwitchesPost"
+            POST: "updateSwitches"
         ]
     }
     path("/switchState") {
@@ -204,44 +203,6 @@ def allEvents() {
 }
 
 def updateSwitches() {
-	// Get parameters of request
-	def device = params.device
-    def command = params.command
-    // Validate that the device supports the sent command, otherwise return error
-    if (command && device) {
-    	if (device != "all") {
-            for (thing in switches) {
-                if (thing.displayName == device) {
-                    if (!thing.hasCommand(command)) {
-                        httpError(501, "${command} is not a valid command for ${device}")
-                        break
-                    }
-                    else {
-                        thing."$command"()
-                        break
-                    }
-                }
-            }
-        }
-        else {
-        	// Could simply perform switches.on() if no requirement for validity checking
-            // Most switches should have on() and off() 
-        	switches.each {
-            	if (!it.hasCommand(command)) {
-                	httpError(501, "${command} is not a valid command for ${it.displayName}")
-                }
-                else {
-                	it."$command"()
-                }
-        	}
-        }
-	}
-    else {
-    	httpError(501, "No device or command sent")
-    }
-}
-
-def updateSwitchesPost() {
 	// Get parameters of request
 	def device = request.JSON?.device
     def command = request.JSON?.command
