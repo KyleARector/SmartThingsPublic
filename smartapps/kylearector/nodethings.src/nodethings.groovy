@@ -21,7 +21,8 @@ definition(
     category: "Convenience",
     iconUrl: "http://kylearector.com/favicon.ico",
     iconX2Url: "http://kylearector.com/favicon.ico",
-    iconX3Url: "http://kylearector.com/favicon.ico")
+    iconX3Url: "http://kylearector.com/favicon.ico",
+    oauth: [displayName: "NodeThings", displayLink: ""])
 
 // Sections for common device/functionality types
 // Multiple devices supported, no explicit declaration
