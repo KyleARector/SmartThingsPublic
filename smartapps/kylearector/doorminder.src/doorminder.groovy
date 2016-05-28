@@ -13,6 +13,14 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  */
+ 
+/////////////////////////////////////////////////////
+//                      To-Do                      //
+/////////////////////////////////////////////////////
+// Allow for multiple inputs
+// Unschedule future alerts for appropriate contact sensor
+// Multiple recipients
+
 definition(
     name: "DoorMinder",
     namespace: "KyleARector",
@@ -29,8 +37,13 @@ definition(
 // Required for installation   
 preferences {
 	section("Sensors") {
-        input "contactSensors", "capability.contactSensor", title:"Which Door or Window Sensors?", multiple:true, required: false
+        input "contactSensors", "capability.contactSensor", title:"Which Door or Window Sensors?", required: true
 	}
+    section("Notifications") {
+        input("recipients", "contact", title: "Send Notifications To?") {
+            input "phone", "phone", title: "Notify via text message", description: "Phone Number", required: false
+        }
+    }
 }
 
 // Called immediately after installation of SmartApp
@@ -50,6 +63,8 @@ def updated() {
 
 // Set subscriptions to events here
 def initialize() {
+    subscribe(contactSensors, "contact.open", contactOpenHandler)
+    subscribe(contactSensors, "contact.closed", contactClosedHandler)
 	log.debug "Initialized"
 }
 
@@ -57,6 +72,20 @@ def initialize() {
 //             Event Handlers And Methods          //
 /////////////////////////////////////////////////////
 
-def allEvents() {
+def contactOpenHandler(evt) {
+    runIn(60*2, sendNotification)
+    log.debug "Alert Scheduled for 2 Minutes!"
+}
 
+def contactClosedHandler(evt) {
+	unschedule()
+    log.debug "Cancelling Schedule"
+}
+
+def sendNotification() {
+	log.debug "Sending Alert"
+    def message = "The door has been open for 2 minutes!"
+    if (phone) {
+            sendSms(phone, message)
+    }
 }
