@@ -86,6 +86,7 @@ def toggleSwitches() {
     // Validate that the device supports the sent command, otherwise return error
     if (button) {
     	if (button == "1") {
+            log.debug "button 1"
         	// Get the state of the first device
             // Apply the opposite state to other devices to synchronize
         	if (btn1Switches[0].currentValue("switch") == "off") {
@@ -100,6 +101,7 @@ def toggleSwitches() {
             }
         }
         else if (button == "2") {
+        	log.debug "button 2"
         	// Get the state of the first device
             // Apply the opposite state to other devices to synchronize
         	if (btn2Switches[0].currentValue("switch") == "off") {
