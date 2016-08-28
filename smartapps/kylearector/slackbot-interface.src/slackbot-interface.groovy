@@ -33,13 +33,25 @@ preferences {
 		input "switches", "capability.switch", title:"Which Switches?", multiple: true, required: false
         input "motionSensors", "capability.motionSensor", title:"Which Motion Sensors?", multiple:true, required: false
         input "contactSensors", "capability.contactSensor", title:"Which Contact Sensors?", multiple:true, required: false
+        input "presenceSensors", "capability.presenceSensor", title:"Which Presence Sensors?", multiple:true, required: false
+        input "tempSensors", "capability.temperatureMeasurement", title:"Which Temperature Sensors?", multiple:true, required: false
+        input "vibeSensors", "capability.accelerationSensor", title:"Which Vibration Sensors?", multiple:true, required: false
 	}
 }
 
 mappings {
     path("/sensors") {
     	action: [
-        	GET: "allSensors",
+        	GET: "allSensors"
+        ]
+    }
+    path("/events") {
+    	action: [
+        	GET: "allEvents"
+        ]
+    }
+    path("/switches") {
+    	action: [
             POST: "updateSwitches"
         ]
     }
@@ -63,7 +75,58 @@ def initialize() {
 /////////////////////////////////////////////////////
 //             Event Handlers And Methods          //
 /////////////////////////////////////////////////////
-
+def allEvents() {
+	def resp = []
+    def baseEventList
+    def deviceName  
+    switches.each {
+    	deviceName = it.displayName
+    	baseEventList = it.events(max: 20).findAll{ it.date > new Date(state.lastAllPoll) && (it.value == "on" || it.value == "off")}
+        baseEventList.each {
+        	resp << [name: deviceName, value: it.value, capability: "switch", date: it.date]
+        }
+    }
+    motionSensors.each {
+    	deviceName = it.displayName
+    	baseEventList = it.events(max: 20).findAll{ it.date > new Date(state.lastAllPoll) && (it.value == "active" || it.value == "inactive")}
+        baseEventList.each {
+        	resp << [name: deviceName, value: it.value, capability: "motion", date: it.date]
+        }
+    }
+    contactSensors.each {
+    	deviceName = it.displayName
+    	baseEventList = it.events(max: 20).findAll{ it.date > new Date(state.lastAllPoll) && (it.value == "open" || it.value == "closed")}
+        baseEventList.each {
+        	resp << [name: deviceName, value: it.value, capability: "contact", date: it.date]
+        }
+    }
+    presenceSensors.each {
+    	deviceName = it.displayName
+    	baseEventList = it.events(max: 20).findAll{ it.date > new Date(state.lastAllPoll) && (it.value == "away" || it.value == "present")}
+        baseEventList.each {
+        	resp << [name: deviceName, value: it.value, capability: "presence", date: it.date]
+        }
+    }
+    tempSensors.each {
+    	deviceName = it.displayName
+    	baseEventList = it.events(max: 20).findAll{ it.date > new Date(state.lastAllPoll) && it.value.isNumber()}
+        baseEventList.each {
+        	resp << [name: deviceName, value: it.value, capability: "temperature", date: it.date]
+        }
+    }
+    vibeSensors.each {
+    	deviceName = it.displayName
+    	baseEventList = it.events(max: 20).findAll{ it.date > new Date(state.lastAllPoll) && (it.value == "active" || it.value == "inactive")}
+        baseEventList.each {
+        	resp << [name: deviceName, value: it.value, capability: "acceleration", date: it.date]
+        }
+    }
+    state.lastAllPoll = now()
+    log.debug "The most recent poll for all sensors was at ${new Date(state.lastAllPoll)}"
+    resp.sort {it.date}
+    resp.reverse(true)
+   	return resp
+}
 
 def allSensors() {
 	def resp = []
