@@ -45,7 +45,7 @@ mappings {
         	GET: "allSensors"
         ]
     }
-    path("/events") {
+    path("/allEvents") {
     	action: [
         	GET: "allEvents"
         ]
@@ -70,6 +70,7 @@ def updated() {
 
 def initialize() {
 	log.debug "Initialized"
+    state.lastAllPoll = now()
 }
 
 /////////////////////////////////////////////////////
@@ -122,7 +123,7 @@ def allEvents() {
         }
     }
     state.lastAllPoll = now()
-    log.debug "The most recent poll for all sensors was at ${new Date(state.lastAllPoll)}"
+    //log.debug "The most recent poll for all sensors was at ${new Date(state.lastAllPoll)}"
     resp.sort {it.date}
     resp.reverse(true)
    	return resp
